@@ -2,6 +2,7 @@ import * as express from "express"
 import * as session from "express-session";
 import authServer from "./controllers/controllerAuthServer"
 import TGS from "./controllers/controllerTGS"
+import saveUser from "./controllers/controllerSaveUser"
 const server = express();
 
 server.use(express.json());
@@ -22,6 +23,8 @@ server.use((req, res, next) => {
 server.get('/',(req,res)=>{
     res.send({response : 'Success'})
 })
+
+server.use('/saveUser', saveUser)
 
 server.use('/authServer', authServer)
 server.use('/tgs', TGS)

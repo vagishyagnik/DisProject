@@ -7,12 +7,17 @@ import * as secret from "../secrets.json"
 
 const route = exp.Router()
 
-route.get('/',(req,res)=>{
-    console.log(req.headers)
+route.get('/',async (req,res)=>{
     let A : A = JSON.parse(req.headers.a );
-    console.log("A : ", A);
-    // Retrieve client secret key 
-    let clientSecretKey = secret.clientSecretKey
+
+    // Retrieve client secret key
+    let random = await userDb.findAll({
+        attributes: ['hashedPassword'],
+        where: {
+          username: A.username
+        }
+    });
+    let clientSecretKey = random[0].dataValues.hashedPassword
 
     let tgtSecretKey = secret.tgtSecretKey
 
@@ -23,8 +28,10 @@ route.get('/',(req,res)=>{
     let B : B = {
         TGSid : 69,
         timestamp : date,
-        lifetime : {    value : 1000,
-                        unit: units.minutes },
+        lifetime : {    
+            value : 1000,
+            unit: units.minutes 
+        },
         TGSsk :  TGSsessionKey
     }
 
@@ -32,23 +39,18 @@ route.get('/',(req,res)=>{
         username : A.username,
         TGSid : 69,
         timestamp : date,
-        userIpAddress : "128.0.0.0",
-        lifetimeForTGT : {  value : 1000,
-                            unit : units.minutes },
+        userIpAddress : A.userIpAddress,
+        lifetimeForTGT : { 
+            value : 4,
+            unit : units.minutes 
+        },
         TGSsk : TGSsessionKey
     }
 
     let cipherB = CryptoJS.AES.encrypt(JSON.stringify(B), clientSecretKey).toString()
     let cipherTGT = CryptoJS.AES.encrypt(JSON.stringify(TGT), tgtSecretKey ).toString()
 
-
     res.status(200).send({cipherB,cipherTGT})
 })
-
-// Just for reference
-// userDb.create({
-//     username: "Vagish",
-//     hashedPassword: "123"
-// })
 
 export default route

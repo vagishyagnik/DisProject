@@ -9,6 +9,11 @@ export interface time {
     unit: units
 }
 
+export interface userDetails {
+    username: string,
+    hashedPassword: string
+}
+
 export interface A {
     username: string,
     serviceId: number,

@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/vagishyagnik/DisProject#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "crypto-js": "^4.1.1",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
