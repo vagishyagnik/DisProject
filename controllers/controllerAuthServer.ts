@@ -8,8 +8,9 @@ import * as secret from "../secrets.json"
 const route = exp.Router()
 
 route.get('/',(req,res)=>{
-    let A : A = req.headers.A;
-
+    console.log(req.headers)
+    let A : A = JSON.parse(req.headers.a );
+    console.log("A : ", A);
     // Retrieve client secret key 
     let clientSecretKey = secret.clientSecretKey
 
@@ -41,7 +42,7 @@ route.get('/',(req,res)=>{
     let cipherTGT = CryptoJS.AES.encrypt(JSON.stringify(TGT), tgtSecretKey ).toString()
 
 
-    res.status(200).send(cipherB,cipherTGT)
+    res.status(200).send({cipherB,cipherTGT})
 })
 
 // Just for reference
