@@ -2,10 +2,10 @@ const Sequelize = require('sequelize');
 
 const db = new Sequelize({
     dialect : 'sqlite',
-    storage : __dirname + '/storage_customers.db'
+    storage : __dirname + '/storage_users.db'
 });
 
-const customerDb = db.define('customer',{
+const userDb = db.define('customer',{
     username : {
         type : Sequelize.STRING,
         allowNull : false,
@@ -20,5 +20,4 @@ const customerDb = db.define('customer',{
 db.sync().then(()=>{
     console.log("DataBase Ready!");
 })
-
-module.exports = { customerDb }
+module.exports = { userDb }

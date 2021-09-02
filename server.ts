@@ -1,5 +1,6 @@
 import * as express from "express"
 import * as session from "express-session"
+import service from "./controllers/controllerServer"
 const server = express();
 
 server.use(express.json());
@@ -17,9 +18,7 @@ server.use((req, res, next) => {
     next();
 })
 
-server.get('/',(req,res)=>{
-    res.send({response : 'Success - Server'})
-})
+server.use('/',service)
 
 const PORT = process.env.PORT || 7969
 server.listen(PORT,()=>{

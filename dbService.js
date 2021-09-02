@@ -7,7 +7,7 @@ const db = new Sequelize({
 
 const serviceDb = db.define('service',{
     serviceId : {
-        type : Sequelize.STRING,
+        type : Sequelize.NUMBER,
         allowNull : false,
         unique : true
     },
