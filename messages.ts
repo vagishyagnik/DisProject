@@ -52,13 +52,13 @@ export interface F {
 export interface serviceTicket {
     username: string, 
     serviceId: number,
-    timestamp: time,
+    timestamp: Date,
     userIpAddress: string,
     lifeTimeForServiceTicket: time,
     serviceSessionKey: string
 }
 
 export interface I {
-    serviceId: string,
-    timestamp: time
+    serviceId: number,
+    timestamp: Date
 }
