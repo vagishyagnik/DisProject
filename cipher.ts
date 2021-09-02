@@ -1,4 +1,5 @@
 import * as CryptoJS from "crypto-js"
+import { units , A } from "./messages"
 
 // Encrypt
 let date = new Date()
@@ -27,3 +28,16 @@ let cipherServiceTicket = CryptoJS.AES.encrypt(JSON.stringify(serviceTicket), se
 console.log(cipherUser)
 console.log('=========================')
 console.log(cipherServiceTicket)
+
+// A object json to string
+let A : A = {
+    username: "Boogey",
+    serviceId: 1,
+    userIpAddress: "128.0.0.0",
+    requestedLifeTimeForTGT: {
+        value : 1000,
+        unit : units.minutes
+    }
+}
+
+console.log("A: ", JSON.stringify(A))
