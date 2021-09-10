@@ -9,9 +9,13 @@ const route = exp.Router()
 route.get('/',(req,res)=>{
     let encTGT = req.headers.tgt
     let D : D = req.headers.d
-    let encUserAuthenticator = req.header.userAuthenticator
+    let encUserAuthenticator = req.headers.userauthenticator
+
+    console.log("tgs req header : ",req.headers)
 
     let tgtSecretKey = secret.tgtSecretKey
+    console.log(tgtSecretKey, encTGT)
+
     let bytes  = CryptoJS.AES.decrypt(encTGT, tgtSecretKey)
     let TGT : TGT = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
 
@@ -54,7 +58,7 @@ route.get('/',(req,res)=>{
     let cipherF = CryptoJS.AES.encrypt(JSON.stringify(F), TGT.TGSsk).toString()
     let cipherServiceTicket = CryptoJS.AES.encrypt(JSON.stringify(serviceTicket), serviceSecretKey  ).toString()
 
-    res.status(200).send({cipherF, cipherServiceTicket})
+    res.status(200).send({cipherF,cipherServiceTicket})
 })
 
 // Just for reference
