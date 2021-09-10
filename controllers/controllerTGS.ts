@@ -11,10 +11,7 @@ route.get('/',(req,res)=>{
     let D : D = req.headers.d
     let encUserAuthenticator = req.headers.userauthenticator
 
-    console.log("tgs req header : ",req.headers)
-
     let tgtSecretKey = secret.tgtSecretKey
-    console.log(tgtSecretKey, encTGT)
 
     let bytes  = CryptoJS.AES.decrypt(encTGT, tgtSecretKey)
     let TGT : TGT = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
@@ -22,7 +19,7 @@ route.get('/',(req,res)=>{
     bytes  = CryptoJS.AES.decrypt(encUserAuthenticator, TGT.TGSsk)
     let userAuthenticator : userAuthenticator = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
 
-    if((userAuthenticator.username != TGT.username) || (userAuthenticator.timestamp != TGT.timestamp)) {
+    if((userAuthenticator.username != TGT.username) || timeDifference(new Date(userAuthenticator.timestamp), new Date(TGT.timestamp), 120)) {
         res.status(400).send('Client not valid - Dropping connection')
         return
     }
@@ -58,6 +55,7 @@ route.get('/',(req,res)=>{
     let cipherF = CryptoJS.AES.encrypt(JSON.stringify(F), TGT.TGSsk).toString()
     let cipherServiceTicket = CryptoJS.AES.encrypt(JSON.stringify(serviceTicket), serviceSecretKey  ).toString()
 
+    console.log("client verified from tgs....")
     res.status(200).send({cipherF,cipherServiceTicket})
 })
 
@@ -68,3 +66,8 @@ route.get('/',(req,res)=>{
 // })
 
 export default route
+
+function timeDifference(time1: Date, time2: Date, permittedDifference: number): Boolean {
+    let minutes: number = Math.abs(time1.getTime() - time2.getTime())/1000
+    return minutes > permittedDifference
+}
