@@ -29,7 +29,7 @@ server.use('/saveUser', saveUser)
 server.use('/authServer', authServer)
 server.use('/tgs', TGS)
 
-const PORT = process.env.PORT || 6979
+const PORT = process.env.PORT || 8004
 server.listen(PORT,()=>{
     console.log('Server started at http://localhost:'+PORT);
 })

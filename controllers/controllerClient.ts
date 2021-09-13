@@ -2,10 +2,9 @@ import * as exp from "express";
 import {A, B, D, F, I, userAuthenticator,  units} from "../messages"
 import * as CryptoJS from "crypto-js"
 import fetch from 'cross-fetch'
-import * as bcrypt from "bcrypt"
 
 const route = exp.Router()
-let username = "Boogey"
+// let username = "Boogey"
 let userIpAddress = "128.0.0.0"
 let serviceId = 1
 
@@ -18,20 +17,21 @@ route.get('/signup', async (req, res)=>{
     let myPlaintextPassword = req.body["password"];
     const someOtherPlaintextPassword = 'not_bacon';
 
-    bcrypt.hash(myPlaintextPassword, saltRounds, async function(err, hash) {
-        console.log('Password for ',req.body["username"],": ", hash)
-        let requestOptions = {
-            method: 'GET'
-        };
-        let response = await fetch("http://localhost:6979/saveUser", requestOptions)
-        let result = await response.text()
-        result = JSON.parse(result)
-    });
+    // bcrypt.hash(myPlaintextPassword, saltRounds, async function(err, hash) {
+    //     console.log('Password for ',req.body["username"],": ", hash)
+    //     let requestOptions = {
+    //         method: 'GET'
+    //     };
+    //     let response = await fetch("http://localhost:8004/saveUser", requestOptions)
+    //     let result = await response.text()
+    //     result = JSON.parse(result)
+    // });
 })
-route.get('/login',async (req,res)=>{
+
+route.post('/login',async (req,res)=>{
     
     let A : A = {
-        username : username,
+        username : req.body["username"],
         serviceId : serviceId,
         userIpAddress : userIpAddress,
         requestedLifeTimeForTGT : {
@@ -47,7 +47,7 @@ route.get('/login',async (req,res)=>{
         headers: { A :JSON.stringify(A) },
     };
 
-    let response = await fetch("http://localhost:6979/authServer", requestOptions)
+    let response = await fetch("http://localhost:8004/authServer", requestOptions)
     if(response.status == 400){
         console.log("\nAccess Denied by Authenticator Server !")
         res.send("\nAccess Denied!")
@@ -62,12 +62,9 @@ route.get('/login',async (req,res)=>{
     // Generate hashed client secret key using client password (will be provided in req.body)
     const saltRounds = 10;
     let myPlaintextPassword = req.body["password"];
-    const someOtherPlaintextPassword = 'not_bacon';
-
-    bcrypt.hash(myPlaintextPassword, saltRounds, async function(err, hash) {
-        console.log('Password for ',req.body["username"],": ", hash)
-    });
-    let clientSecretKey = "$2b$10$f6QoqD4Dg2dyH51isX2/lOvJSlxJHFqaj.1bYQN8cuDA5p0NFTJgG"
+    console.log('this is the recieved password', myPlaintextPassword)
+    let clientSecretKey = CryptoJS.SHA256(myPlaintextPassword).toString()
+    console.log('Client seccret key -', clientSecretKey)
     let bytes = CryptoJS.AES.decrypt(authenticatorB, clientSecretKey)
     let decryptB: B = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
 
@@ -81,7 +78,7 @@ route.get('/login',async (req,res)=>{
         }
     }
     let userAuthenticator : userAuthenticator = {
-        username : username,
+        username : req.body["username"],
         timestamp : new Date()
     }
     let cipherUserAuthenticator = CryptoJS.AES.encrypt(JSON.stringify(userAuthenticator), tgsSessionKey).toString()
@@ -93,7 +90,7 @@ route.get('/login',async (req,res)=>{
             D : JSON.stringify(D),
             UserAuthenticator : cipherUserAuthenticator},
         };    
-    let TGSresponse = await fetch("http://localhost:6979/tgs", TGSrequestOptions)
+    let TGSresponse = await fetch("http://localhost:8004/tgs", TGSrequestOptions)
     if(TGSresponse.status == 400){
         console.log("\nAccess Denied by Ticket Granting Server !")
         res.send("\nAccess Denied!")
@@ -134,6 +131,6 @@ route.get('/login',async (req,res)=>{
 
     res.send("\nGot Access")
 
-    })
+})
 
 export default route

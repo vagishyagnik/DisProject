@@ -1,7 +1,7 @@
 import * as CryptoJS from "crypto-js"
 import { units , A } from "./messages"
 import * as randomToken from "random-token";
-import * as bcrypt from "bcrypt"
+// import * as bcrypt from "bcrypt"
 
 // Encrypt
 let date = new Date()
@@ -46,16 +46,33 @@ let randomToken = require('random-token').create('abcdefghijklmnopqrstuvwxzyABCD
 console.log('one', randomToken(16))
 console.log('two', randomToken(16))
 
-const saltRounds = 10;
-let myPlaintextPassword = 'boogey';
-const someOtherPlaintextPassword = 'not_bacon';
+// const saltRounds = 10;
+// let myPlaintextPassword = 'vagish';
+// const someOtherPlaintextPassword = 'not_bacon';
 
-bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
-    console.log('Password for boogey:', hash)
-});
-myPlaintextPassword = 'vishesh';
-bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
-    console.log('Password for boogey:', hash)
-});
+// // let temp = await bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
+// //     console.log('Password for boogey:', hash)
+// // });
+// async function func() {
+//     const saltRounds = 10;
+//     let myPlaintextPassword = 'vagish';
+//     const someOtherPlaintextPassword = 'not_bacon';
+//     let temp = await bcrypt.hash(myPlaintextPassword, saltRounds)
+//     console.log('ye dekkkkkkkkhhhhhhhhhhhhhh -------', temp)
+// }
+// console.log(func())
+
+console.log('----------------', CryptoJS.SHA256('vagish').toString())
+
+
+
+
+
+
+
+// myPlaintextPassword = 'vishesh';
+// bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
+//     console.log('Password for vishesh:', hash)
+// });
 
 console.log("A: ", JSON.stringify(A))

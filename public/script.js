@@ -1,6 +1,6 @@
 $(document).ready(function () {
-    var panelOne = $(".form-panel.two").height(),
-      panelTwo = $(".form-panel.two")[0].scrollHeight;
+    var panelOne = $(".form-panel.two").height() 
+    var panelTwo = $(".form-panel.two")[0].scrollHeight;
   
     $(".form-panel.two")
       .not(".form-panel.two.active")
@@ -19,16 +19,15 @@ $(document).ready(function () {
       });
   
     $(".form-toggle").on("click", function (e) {
-      e.preventDefault();
-      $(this).removeClass("visible");
-      $(".form-panel.one").removeClass("hidden");
-      $(".form-panel.two").removeClass("active");
-      $(".form").animate(
-        {
-          height: panelOne
-        },
-        200
-      );
+        e.preventDefault();
+        $(this).removeClass("visible");
+        $(".form-panel.one").removeClass("hidden");
+        $(".form-panel.two").removeClass("active");
+        $(".form").animate({
+            height: panelOne
+          },
+          200
+        );
     });
-  });
+});
   
