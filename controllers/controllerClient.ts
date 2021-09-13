@@ -32,9 +32,11 @@ route.get('/',async (req,res)=>{
         console.log("\nAccess Denied by Authenticator Server !")
         res.send("\nAccess Denied!")
     }
-    
     let result =await response.text()
     result = JSON.parse(result)
+    
+    console.log("\nAuthenticated done by Authenticator Server :) ")
+    console.log("\nResponse from Authenticator Server : ",result)
 
     let authenticatorB = result["cipherB"]
     let authenticatorTGT = result["cipherTGT"]
@@ -64,17 +66,21 @@ route.get('/',async (req,res)=>{
         headers: {  TGT : authenticatorTGT,
                     D : JSON.stringify(D),
                     UserAuthenticator : cipherUserAuthenticator},
-        };    
+        };  
+        
+    console.log("\nAuthentication request sent to Ticket Granting Server.....")
+    console.log("\nData Send to TGS :",TGSrequestOptions.headers)
+    
     let TGSresponse = await fetch("http://localhost:6979/tgs", TGSrequestOptions)
     if(TGSresponse.status == 400){
         console.log("\nAccess Denied by Ticket Granting Server !")
         res.send("\nAccess Denied!")
     }
     let TGSresult =await TGSresponse.text()
-    console.log("TGS result : " , TGSresult)
     TGSresult = JSON.parse(TGSresult)
-    
-    console.log("TGS Response : ", TGSresult)
+
+    console.log("\nAuthenticated done by TGS :) ")
+    console.log("\nResponse from TGS : ", TGSresult)
 
     let encF = TGSresult["cipherF"]
     let encServiceTicket = TGSresult["cipherServiceTicket"]
@@ -93,6 +99,10 @@ route.get('/',async (req,res)=>{
                     userauthenticator : cipherUserAuthenticator
                 },
         };    
+
+    console.log("\nAuthentication request sent to Server.....")
+    console.log("\nData Send to Server :",serverRequestOptions.headers)
+
     let Serverresponse = await fetch("http://localhost:7969/", serverRequestOptions)
     if(Serverresponse.status == 400){
         console.log("\nAccess Denied by Server !")
@@ -102,10 +112,11 @@ route.get('/',async (req,res)=>{
 
     bytes = CryptoJS.AES.decrypt(ServerResult, serviceSessionKey)
     let I: I = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
-    console.log("\nServer result : " , I)
-
+    
+    console.log("\nAuthenticated done by Server :) ")
+    console.log("\nResponse from Server : ", I)
+    
     res.send("\nGot Access")
-
     })
 
 export default route
