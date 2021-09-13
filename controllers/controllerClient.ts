@@ -1,5 +1,5 @@
 import * as exp from "express";
-import {A, B, D, userAuthenticator,  units} from "../messages"
+import {A, B, D, F, I, userAuthenticator,  units} from "../messages"
 import * as CryptoJS from "crypto-js"
 import fetch from 'cross-fetch'
 import * as bcrypt from "bcrypt"
@@ -39,20 +39,25 @@ route.get('/login',async (req,res)=>{
             unit : units.minutes
         }
     }
+    console.log("\nAuthentication request sent to Authenticator.....")
+    console.log("\nA :",A)
 
     let requestOptions = {
         method: 'GET',
         headers: { A :JSON.stringify(A) },
     };
 
-
     let response = await fetch("http://localhost:6979/authServer", requestOptions)
+    if(response.status == 400){
+        console.log("\nAccess Denied by Authenticator Server !")
+        res.send("\nAccess Denied!")
+    }
+    
     let result =await response.text()
     result = JSON.parse(result)
 
     let authenticatorB = result["cipherB"]
     let authenticatorTGT = result["cipherTGT"]
-
 
     // Generate hashed client secret key using client password (will be provided in req.body)
     const saltRounds = 10;
@@ -89,12 +94,46 @@ route.get('/login',async (req,res)=>{
             UserAuthenticator : cipherUserAuthenticator},
         };    
     let TGSresponse = await fetch("http://localhost:6979/tgs", TGSrequestOptions)
+    if(TGSresponse.status == 400){
+        console.log("\nAccess Denied by Ticket Granting Server !")
+        res.send("\nAccess Denied!")
+    }
     let TGSresult =await TGSresponse.text()
     console.log("TGS result : " , TGSresult)
     TGSresult = JSON.parse(TGSresult)
     
     console.log("TGS Response : ", TGSresult)
-    res.send(" Got Access")
-})
+
+    let encF = TGSresult["cipherF"]
+    let encServiceTicket = TGSresult["cipherServiceTicket"]
+
+    bytes = CryptoJS.AES.decrypt(encF, tgsSessionKey)
+    let F: F = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
+
+    let serviceSessionKey = F["serviceSessionKey"]
+
+    userAuthenticator["timestamp"] = new Date();
+    cipherUserAuthenticator = CryptoJS.AES.encrypt(JSON.stringify(userAuthenticator), serviceSessionKey).toString()
+
+    let serverRequestOptions = {
+        method: 'GET',
+        headers: {  serviceticket : encServiceTicket,
+                    userauthenticator : cipherUserAuthenticator
+                },
+        };    
+    let Serverresponse = await fetch("http://localhost:7969/", serverRequestOptions)
+    if(Serverresponse.status == 400){
+        console.log("\nAccess Denied by Server !")
+        res.send("\nAccess Denied!")
+    }
+    let ServerResult =await Serverresponse.text()
+
+    bytes = CryptoJS.AES.decrypt(ServerResult, serviceSessionKey)
+    let I: I = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
+    console.log("\nServer result : " , I)
+
+    res.send("\nGot Access")
+
+    })
 
 export default route

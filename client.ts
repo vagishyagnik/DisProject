@@ -21,7 +21,7 @@ server.use((req, res, next) => {
 server.use(express.static('public'))
 // server.use('/',client)
 
-const PORT = process.env.PORT || 7989
+const PORT = process.env.PORT || 8001
 server.listen(PORT,()=>{
     console.log('Server started at http://localhost:'+PORT);
 })

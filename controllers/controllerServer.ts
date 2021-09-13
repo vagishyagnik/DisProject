@@ -9,9 +9,7 @@ route.get('/',(req,res)=>{
 
     console.log(req.headers)
     let encUserAuth = req.headers.userauthenticator
-    console.log('Encrypted User Authenticator', encUserAuth)
     let encServiceTicket = req.headers.serviceticket
-    console.log('Encrypted Service Ticket', encServiceTicket)
 
     let secretServiceKey = mySecretKey
 
@@ -23,11 +21,17 @@ route.get('/',(req,res)=>{
     bytes = CryptoJS.AES.decrypt(encUserAuth, serviceSessionKey)
     let userAuthenticator: userAuthenticator = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
 
-    console.log('Decrypted User Authenticator', userAuthenticator)
-    console.log('Decrypted Service Ticket', serviceTicket)
+    console.log("\nAuthencation request recieved by Server at ",new Date().getTime())
+    console.log("\nEncrypted recieved data: ")
+    console.log("\nUser Authenticator : ",encUserAuth)
+    console.log("\nService Ticket : ",encServiceTicket)
+    console.log("\nDecrypted recieved data: ")
+    console.log("\nUser Authenticator : ",userAuthenticator)
+    console.log("\nService Ticket : ",serviceTicket)
 
-    if((userAuthenticator.username != serviceTicket.username) || timeDifference(userAuthenticator.timestamp, serviceTicket.timestamp, 120)) {
-        res.status(400).send('Client not valid - Dropping connection')
+
+    if((userAuthenticator.username != serviceTicket.username) || timeDifference(new Date(userAuthenticator.timestamp),new Date( serviceTicket.timestamp), 120)) {
+        res.status(400).send('Client not valid - Dropping connection at Server')
         return
     }
 
@@ -36,14 +40,14 @@ route.get('/',(req,res)=>{
         timestamp: new Date()
     }
     let cipherResponse = CryptoJS.AES.encrypt(JSON.stringify(response), serviceSessionKey).toString();
+   
+    console.log("\nClient verified from server....")
     res.status(200).send(cipherResponse)
 })
 
 export default route
 
-
-
 function timeDifference(time1: Date, time2: Date, permittedDifference: number): Boolean {
     let minutes: number = Math.abs(time1.getTime() - time2.getTime())/1000
-    return minutes <= permittedDifference
+    return minutes > permittedDifference
 }
