@@ -19,8 +19,18 @@ route.get('/',(req,res)=>{
     bytes  = CryptoJS.AES.decrypt(encUserAuthenticator, TGT.TGSsk)
     let userAuthenticator : userAuthenticator = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
 
+    console.log("\nAuthencation request recieved by TGS at ",new Date().getTime)
+    console.log("\nEncrypted recieved data: ")
+    console.log("\nD : ",D)
+    console.log("\nTGT : ",encTGT)
+    console.log("\nUser Authenticator : ",encUserAuthenticator)
+    console.log("\nDecrypted recieved data: ")
+    console.log("\nTGT : ",TGT)
+    console.log("\nUser Authenticator : ",userAuthenticator)
+
+
     if((userAuthenticator.username != TGT.username) || timeDifference(new Date(userAuthenticator.timestamp), new Date(TGT.timestamp), 120)) {
-        res.status(400).send('Client not valid - Dropping connection')
+        res.status(400).send('Client not valid - Dropping connection at TGS')
         return
     }
     let randomToken = require('random-token').create('abcdefghijklmnopqrstuvwxzyABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
@@ -55,7 +65,7 @@ route.get('/',(req,res)=>{
     let cipherF = CryptoJS.AES.encrypt(JSON.stringify(F), TGT.TGSsk).toString()
     let cipherServiceTicket = CryptoJS.AES.encrypt(JSON.stringify(serviceTicket), serviceSecretKey  ).toString()
 
-    console.log("client verified from tgs....")
+    console.log("\nclient verified from tgs....")
     res.status(200).send({cipherF,cipherServiceTicket})
 })
 

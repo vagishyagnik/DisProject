@@ -28,7 +28,7 @@
     "node-fetch": "^3.0.0",
     "nodemon": "^2.0.12",
     "random-token": "0.0.8",
-    "sequelize": "^6.6.5",
+    "sequelize": "^6.6.5", 
     "sqlite3": "^5.0.2"
   },
   "devDependencies": {
