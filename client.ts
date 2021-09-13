@@ -18,7 +18,8 @@ server.use((req, res, next) => {
     next();
 })
 
-server.use('/',client)
+server.use(express.static('public'))
+// server.use('/',client)
 
 const PORT = process.env.PORT || 8001
 server.listen(PORT,()=>{
