@@ -142,11 +142,7 @@ route.post('/login',async (req,res)=>{
     console.log("\nResponse from Server : ", I)
     
     res.send("\nGot Access")
-<<<<<<< HEAD
 
 })
-=======
-    })
->>>>>>> 681858b029c7709d7b218411ec2f94d0a8736e44
 
 export default route
