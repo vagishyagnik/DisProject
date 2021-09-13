@@ -19,6 +19,8 @@ route.get('/',async (req,res)=>{
             unit : units.minutes
         }
     }
+    console.log("\nAuthentication request sent to Authenticator.....")
+    console.log("\nA :",A)
 
     let requestOptions = {
     method: 'GET',
@@ -26,6 +28,11 @@ route.get('/',async (req,res)=>{
     };
 
     let response = await fetch("http://localhost:6979/authServer", requestOptions)
+    if(response.status == 400){
+        console.log("\nAccess Denied by Authenticator Server !")
+        res.send("\nAccess Denied!")
+    }
+    
     let result =await response.text()
     result = JSON.parse(result)
 
@@ -59,6 +66,10 @@ route.get('/',async (req,res)=>{
                     UserAuthenticator : cipherUserAuthenticator},
         };    
     let TGSresponse = await fetch("http://localhost:6979/tgs", TGSrequestOptions)
+    if(TGSresponse.status == 400){
+        console.log("\nAccess Denied by Ticket Granting Server !")
+        res.send("\nAccess Denied!")
+    }
     let TGSresult =await TGSresponse.text()
     console.log("TGS result : " , TGSresult)
     TGSresult = JSON.parse(TGSresult)
@@ -83,6 +94,10 @@ route.get('/',async (req,res)=>{
                 },
         };    
     let Serverresponse = await fetch("http://localhost:7969/", serverRequestOptions)
+    if(Serverresponse.status == 400){
+        console.log("\nAccess Denied by Server !")
+        res.send("\nAccess Denied!")
+    }
     let ServerResult =await Serverresponse.text()
 
     bytes = CryptoJS.AES.decrypt(ServerResult, serviceSessionKey)

@@ -19,7 +19,7 @@ route.get('/',(req,res)=>{
     bytes  = CryptoJS.AES.decrypt(encUserAuthenticator, TGT.TGSsk)
     let userAuthenticator : userAuthenticator = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
 
-    console.log("\nAuthencation request recieved by TGS at ",new Date().getTime)
+    console.log("\nAuthencation request recieved by TGS at ",new Date().getTime())
     console.log("\nEncrypted recieved data: ")
     console.log("\nD : ",D)
     console.log("\nTGT : ",encTGT)

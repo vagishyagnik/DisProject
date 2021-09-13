@@ -21,7 +21,7 @@ route.get('/',(req,res)=>{
     bytes = CryptoJS.AES.decrypt(encUserAuth, serviceSessionKey)
     let userAuthenticator: userAuthenticator = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
 
-    console.log("\nAuthencation request recieved by Server at ",new Date().getTime)
+    console.log("\nAuthencation request recieved by Server at ",new Date().getTime())
     console.log("\nEncrypted recieved data: ")
     console.log("\nUser Authenticator : ",encUserAuth)
     console.log("\nService Ticket : ",encServiceTicket)
@@ -46,8 +46,6 @@ route.get('/',(req,res)=>{
 })
 
 export default route
-
-
 
 function timeDifference(time1: Date, time2: Date, permittedDifference: number): Boolean {
     let minutes: number = Math.abs(time1.getTime() - time2.getTime())/1000

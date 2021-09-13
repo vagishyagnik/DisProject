@@ -11,7 +11,7 @@ const route = exp.Router()
 route.get('/',async (req,res)=>{
     let A : A = JSON.parse(req.headers.a );
 
-    console.log("\nAuthencation request recieved by Authenticator at ",new Date().getTime)
+    console.log("\nAuthencation request recieved by Authenticator at ",new Date().getTime())
     console.log("\nA : ",A)
 
     // Retrieve client secret key
