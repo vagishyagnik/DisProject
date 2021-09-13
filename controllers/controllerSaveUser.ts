@@ -3,7 +3,7 @@ import { userDb } from '../dbUsers'
 import { userDetails } from "../messages"
 const route = exp.Router()
 
-route.get('/',async (req,res)=>{
+route.post('/',async (req,res)=>{
     let body = req.body
     let user: userDetails = {
         username: body.username,
@@ -13,7 +13,8 @@ route.get('/',async (req,res)=>{
     userDb.findAll({
         where: { username: req.body.username }
     }).then((value)=>{
-        if(!value) {
+        console.log('value', value)
+        if(value.length == 0) {
             userDb.create(user).then((values)=>{
                 res.status(200).send('User added succesfully')
                 return

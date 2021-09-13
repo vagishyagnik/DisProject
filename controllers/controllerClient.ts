@@ -4,28 +4,30 @@ import * as CryptoJS from "crypto-js"
 import fetch from 'cross-fetch'
 
 const route = exp.Router()
-// let username = "Boogey"
 let userIpAddress = "128.0.0.0"
 let serviceId = 1
 
-route.get('/signup', async (req, res)=>{
+route.post('/signup', async (req, res)=>{
     if(req.body["password"] != req.body["cpassword"]) {
         res.redirect('/')
         return
     }
-    const saltRounds = 10;
-    let myPlaintextPassword = req.body["password"];
-    const someOtherPlaintextPassword = 'not_bacon';
+    let myPlaintextPassword = req.body["password"]
+    let clientSecretKey = CryptoJS.SHA256(myPlaintextPassword).toString()
 
-    // bcrypt.hash(myPlaintextPassword, saltRounds, async function(err, hash) {
-    //     console.log('Password for ',req.body["username"],": ", hash)
-    //     let requestOptions = {
-    //         method: 'GET'
-    //     };
-    //     let response = await fetch("http://localhost:8004/saveUser", requestOptions)
-    //     let result = await response.text()
-    //     result = JSON.parse(result)
-    // });
+    let requestOptions = {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username: req.body["username"],
+            hashedPassword: clientSecretKey
+        })
+    }
+    let response = await fetch("http://localhost:8004/saveUser", requestOptions)
+    let result = await response.text()
+    res.redirect('/')
 })
 
 route.post('/login',async (req,res)=>{
