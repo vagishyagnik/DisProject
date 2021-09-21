@@ -1,6 +1,6 @@
 import * as exp from "express";
-import { userDb } from '../dbUsers'
-import { userDetails } from "../messages"
+import { userDb } from '../KDC/dbUsers'
+import { userDetails } from "./messages"
 const route = exp.Router()
 
 route.post('/',async (req,res)=>{

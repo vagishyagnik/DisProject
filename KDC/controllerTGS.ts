@@ -1,6 +1,6 @@
 import * as exp from "express";
-import { serviceDb } from '../dbService'
-import {userAuthenticator, D, TGT, F, serviceTicket, units} from "../messages"
+import { serviceDb } from './dbService'
+import {userAuthenticator, D, TGT, F, serviceTicket, units} from "./messages"
 import * as randomToken from "random-token";
 import * as CryptoJS from "crypto-js"
 import * as secret from "../secrets.json"

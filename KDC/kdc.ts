@@ -1,6 +1,8 @@
 import * as express from "express"
-import * as session from "express-session"
-import service from "./controllers/controllerServer"
+import * as session from "express-session";
+import authServer from "./controllerAuthServer"
+import TGS from "./controllerTGS"
+import saveUser from "./controllerSaveUser"
 const server = express();
 
 server.use(express.json());
@@ -18,10 +20,16 @@ server.use((req, res, next) => {
     next();
 })
 
-server.use('/',service)
+server.get('/',(req,res)=>{
+    res.send({response : 'Success'})
+})
 
+server.use('/saveUser', saveUser)
 
-const PORT = process.env.PORT || 7969
+server.use('/authServer', authServer)
+server.use('/tgs', TGS)
+
+const PORT = process.env.PORT || 8004
 server.listen(PORT,()=>{
     console.log('Server started at http://localhost:'+PORT);
 })

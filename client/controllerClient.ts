@@ -1,5 +1,5 @@
 import * as exp from "express";
-import {A, B, D, F, I, userAuthenticator,  units} from "../messages"
+import {A, B, D, F, I, userAuthenticator,  units} from "./messages"
 import * as CryptoJS from "crypto-js"
 import fetch from 'cross-fetch'
 

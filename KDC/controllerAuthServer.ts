@@ -1,6 +1,6 @@
 import * as exp from "express";
-import { userDb } from '../dbUsers'
-import {A, B , TGT , units} from "../messages"
+import { userDb } from '../KDC/dbUsers'
+import {A, B , TGT , units} from "./messages"
 import * as randomToken from "random-token";
 import * as CryptoJS from "crypto-js"
 import * as secret from "../secrets.json"
