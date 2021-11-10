@@ -1,164 +1,150 @@
-body {
-    font-family: "Roboto";
+@import url("https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+section {
+  position: relative;
+  min-height: 100vh;
+  background-image: url('./login screen.jpg');
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.container {
+  position: relative;
+  width: 800px;
+  height: 500px;
+  background: #fff;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+.container .user {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+.container .user .imgBx {
+  position: relative;
+  width: 50%;
+  height: 100%;
+  background: #ff0;
+  transition: 0.5s;
+}
+.container .user .imgBx img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.container .user .formBx {
+  position: relative;
+  width: 50%;
+  height: 100%;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  transition: 0.5s;
+}
+.container .user .formBx form h2 {
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 10px;
+  color: #555;
+}
+.container .user .formBx form input {
+  position: relative;
+  width: 100%;
+  padding: 10px;
+  background: #f5f5f5;
+  color: #333;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  margin: 8px 0;
+  font-size: 14px;
+  letter-spacing: 1px;
+  font-weight: 300;
+}
+.container .user .formBx form input[type="submit"] {
+  max-width: 100px;
+  background: #677eff;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  transition: 0.5s;
+}
+.container .user .formBx form .signup {
+  position: relative;
+  margin-top: 20px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: black;
+  text-transform: uppercase;
+  font-weight: 300;
+}
+.container .user .formBx form .signup a {
+  font-weight: 600;
+  text-decoration: none;
+  color: black;
+}
+.container .signupBx {
+  pointer-events: none;
+}
+.active .signupBx {
+  pointer-events: initial;
+}
+
+.container .signupBx .formBx {
+  left: 100%;
+}
+.active .signupBx .formBx {
+  left: 0;
+}
+.container .signupBx .imgBx {
+  left: -100%;
+}
+.active .signupBx .imgBx {
+  left: 0;
+}
+
+.container .signinBx .formBx {
+  left: 0;
+}
+.active .signinBx .formBx {
+  left: 100%;
+}
+.container .signinBx .imgBx {
+  left: 0;
+}
+.active .signinBx .imgBx {
+  left: -100%;
+}
+
+@media (max-width: 991px) {
+  section .container {
+    max-width: 400px;
   }
-  
-  .back {
-    background: linear-gradient(120grad, #643986, #98aed5);
-    position: absolute;
+  section .container .imgBx {
+    display: none;
+  }
+  section .container .user .formBx {
     width: 100%;
-    height: 100%;
   }
-  
-  .registration-form {
-    width: 400px;
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, 0%);
-    top: 15%;
-    background: transparent;
-  }
-  .registration-form header {
-    position: relative;
-    z-index: 4;
-    background: white;
-    padding: 20px 40px;
-    border-radius: 15px 15px 0 0;
-  }
-  .registration-form header h1 {
-    font-weight: 900;
-    letter-spacing: 1.5px;
-    color: #333;
-    font-size: 23px;
-    text-transform: uppercase;
-    margin: 0;
-  }
-  .registration-form header p {
-    word-spacing: 0px;
-    color: #9facb6;
-    font-size: 17px;
-    margin: 0;
-    margin-top: 5px;
-  }
-  .registration-form form {
-    position: relative;
-  }
-  .registration-form .input-section {
-    width: 100%;
-    position: absolute;
-    display: flex;
-    left: 50%;
-    transform: translate(-50%, 0);
-    height: 75px;
-    border-radius: 0 0 15px 15px;
-    overflow: hidden;
-    z-index: 2;
-    box-shadow: 0px 0px 100px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease-in;
-  }
-  .registration-form .input-section.folded {
-    width: 95%;
-    margin-top: 10px;
-    left: 50%;
-    transform: translate(-50%, 0);
-    z-index: 1;
-  }
-  .registration-form .input-section.folded input {
-    background-color: #e9e2c0;
-  }
-  .registration-form .input-section.folded span {
-    background-color: #e9e2c0;
-  }
-  .registration-form .input-section.folded + .folded {
-    width: 90%;
-    margin-top: 20px;
-    left: 50%;
-    transform: translate(-50%, 0);
-    z-index: 0;
-  }
-  .registration-form .input-section.folded + .folded input {
-    background-color: #e1bcef;
-  }
-  .registration-form .input-section.folded + .folded span {
-    background-color: #e1bcef;
-  }
-  .registration-form .input-section.fold-up {
-    margin-top: -75px;
-  }
-  .registration-form form input {
-    background: white;
-    color: #8f8fd6;
-    width: 80%;
-    border: 0;
-    padding: 20px 40px;
-    margin: 0;
-  }
-  .registration-form form input:focus {
-    outline: none;
-  }
-  .registration-form form input::-moz-placeholder {
-    color: #8f8fd6;
-    font-weight: 100;
-  }
-  .registration-form form input:-ms-input-placeholder {
-    color: #8f8fd6;
-    font-weight: 100;
-  }
-  .registration-form form input::placeholder {
-    color: #8f8fd6;
-    font-weight: 100;
-  }
-  
-  .animated-button {
-    width: 20%;
-    background-color: #d4d4ff;
-  }
-  .animated-button span {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    line-height: 75px;
-    text-align: center;
-    height: 75px;
-    transition: all 0.2s ease-in;
-  }
-  .animated-button span i {
-    font-size: 25px;
-    color: #9999f8;
-  }
-  .animated-button .next-button {
-    background: transparent;
-    color: #9999f8;
-    font-weight: 100;
-    width: 100%;
-    border: 0;
-  }
-  
-  .next {
-    margin-top: -75px;
-  }
-  
-  .success {
-    width: 100%;
-    position: absolute;
-    display: flex;
-    align-items: center;
-    left: 50%;
-    transform: translate(-50%, 0);
-    height: 75px;
-    border-radius: 0 0 15px 15px;
-    overflow: hidden;
-    z-index: 2;
-    box-shadow: 0px 0px 100px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease-in;
-    background: limegreen;
-    margin-top: -75px;
-  }
-  .success p {
-    color: white;
-    font-weight: 900;
-    letter-spacing: 2px;
-    font-size: 18px;
-    width: 100%;
-    text-align: center;
-  }
+}

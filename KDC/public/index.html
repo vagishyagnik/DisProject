@@ -4,37 +4,49 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>KDC Registery service</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
-<div class="back"></div>
-<div class="registration-form">
-  <header>
-    <h1>Sign Up</h1>
-    <p>Fill in all informations</p>
-  </header>
-  <form action="/saveUser" method="post">
-    <div class="input-section email-section">
-      <input class="email" type="email" placeholder="ENTER YOUR E-MAIL HERE" autocomplete="off"/>
-      <div class="animated-button"><span class="icon-paper-plane"><i class="fa fa-envelope-o"></i></span><span class="next-button email"><i class="fa fa-arrow-up"></i></span></div>
+  <section>
+    <div class="container">
+      <div class="user signinBx">
+        <div class="imgBx"><img src="https://images.unsplash.com/photo-1576859958081-27de5c70262a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=687&q=80" /></div>
+        <div class="formBx">
+          <form action="/save/user" method="POST">
+            <h2>Register a USER</h2>
+            <input type="text" name="username" placeholder="Username" />
+            <input type="password" name="password" placeholder="Password" />
+            <input type="password" name="passwordC" placeholder="Confirm Password" />
+            <input type="submit" name="" value="Register" />
+            <p class="signup">
+              Want to register a service ?<a href="#" onclick="toggleForm();">
+                Service
+              </a>
+            </p>
+          </form>
+        </div>
+      </div>
+      <div class="user signupBx">
+        <div class="formBx">
+          <form method="post" action="/save/service">
+            <h2>Register a SERVICE</h2>
+            <input type="number" name="serviceId" placeholder="Service Id" />
+            <input type="password" name="serviceSecretKey" placeholder="Service Secret Key" />
+            <input type="password" name="serviceSecretKeyC" placeholder="Confirm Service Secret Key" />
+            <input type="submit" name="" value="Register" />
+            <p class="signup">
+              Want to register a User ?
+              <a href="#" onclick="toggleForm();"> User </a>
+            </p>
+          </form>
+        </div>
+        <div class="imgBx"><img src="https://media.istockphoto.com/photos/extreme-closeup-of-supercomputer-picture-id1073009100?k=20&m=1073009100&s=612x612&w=0&h=QYnfGbZSzpyu-S2bW5q9AUECIVHr6-hQ6AsQ8AJtncI=" /></div>
+      </div>
     </div>
-    <div class="input-section password-section folded">
-      <input class="password" type="password" placeholder="ENTER YOUR PASSWORD HERE"/>
-      <div class="animated-button"><span class="icon-lock"><i class="fa fa-lock"></i></span><span class="next-button password"><i class="fa fa-arrow-up"></i></span></div>
-    </div>
-    <div class="input-section repeat-password-section folded">
-      <input class="repeat-password" type="password" placeholder="REPEAT YOUR PASSWORD HERE"/>
-      <div class="animated-button"><span class="icon-repeat-lock"><i class="fa fa-lock"></i></span><span class="next-button repeat-password"><i class="fa fa-paper-plane"></i></span></div>
-    </div>
-    <div class="success"> 
-      <p>ACCOUNT CREATED</p>
-    </div>
-  </form>
-</div>
+  </section>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-    <script src="./script.js"></script>
+  <!-- <script src="https://code.jquery.com/jquery-3.6.0.js"></script> -->
+  <script src="./script.js"></script>
 </body>
 </html>

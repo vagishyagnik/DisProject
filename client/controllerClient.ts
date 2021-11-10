@@ -1,34 +1,12 @@
 import * as exp from "express";
 import {A, B, D, F, I, userAuthenticator,  units} from "./messages"
 import * as CryptoJS from "crypto-js"
+import * as address from "./address.json"
 import fetch from 'cross-fetch'
 
 const route = exp.Router()
 let userIpAddress = null
 let serviceId = 1
-
-// route.post('/signup', async (req, res)=>{
-//     if(req.body["password"] != req.body["cpassword"]) {
-//         res.redirect('/')
-//         return
-//     }
-//     let myPlaintextPassword = req.body["password"]
-//     let clientSecretKey = CryptoJS.SHA256(myPlaintextPassword).toString()
-
-//     let requestOptions = {
-//         method: 'POST',
-//         headers: {
-//             "Content-Type": "application/json"
-//         },
-//         body: JSON.stringify({
-//             username: req.body["username"],
-//             hashedPassword: clientSecretKey
-//         })
-//     }
-//     let response = await fetch("http://localhost:8004/saveUser", requestOptions)
-//     let result = await response.text()
-//     res.redirect('/')
-// })
 
 route.post('/login',async (req,res)=>{
     userIpAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
@@ -50,7 +28,7 @@ route.post('/login',async (req,res)=>{
         headers: { A :JSON.stringify(A) },
     };
 
-    let response = await fetch("http://localhost:8004/authServer", requestOptions)
+    let response = await fetch(address.kdc.authServer, requestOptions)
     if(response.status == 400){
         console.log("\nAccess Denied by Authenticator Server !")
         res.send("\nAccess Denied!")
@@ -69,7 +47,7 @@ route.post('/login',async (req,res)=>{
     let myPlaintextPassword = req.body["password"];
     console.log('this is the recieved password', myPlaintextPassword)
     let clientSecretKey = CryptoJS.SHA256(myPlaintextPassword).toString()
-    console.log('Client seccret key -', clientSecretKey)
+    console.log('Client secret key -', clientSecretKey)
     let bytes = CryptoJS.AES.decrypt(authenticatorB, clientSecretKey)
     let decryptB: B = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
 
@@ -101,7 +79,7 @@ route.post('/login',async (req,res)=>{
     console.log("\nData Send to TGS :",TGSrequestOptions.headers)
     
 
-    let TGSresponse = await fetch("http://localhost:8004/tgs", TGSrequestOptions)
+    let TGSresponse = await fetch(address.kdc.tgs, TGSrequestOptions)
     if(TGSresponse.status == 400){
         console.log("\nAccess Denied by Ticket Granting Server !")
         res.send("\nAccess Denied!")
@@ -134,7 +112,7 @@ route.post('/login',async (req,res)=>{
     console.log("\nAuthentication request sent to Server.....")
     console.log("\nData Send to Server :",serverRequestOptions.headers)
 
-    let Serverresponse = await fetch("http://localhost:7969/", serverRequestOptions)
+    let Serverresponse = await fetch(address.service, serverRequestOptions)
     if(Serverresponse.status == 400){
         console.log("\nAccess Denied by Server !")
         res.send("\nAccess Denied!")

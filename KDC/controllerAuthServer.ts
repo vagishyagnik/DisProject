@@ -2,7 +2,7 @@ import * as exp from "express";
 import { userDb } from './dbUsers'
 import {A, B , TGT , units} from "./messages"
 import * as CryptoJS from "crypto-js"
-import * as secret from "../secrets.json"
+import * as secret from "./secrets.json"
 
 const route = exp.Router()
 
@@ -22,7 +22,6 @@ route.get('/',async (req,res)=>{
     if(random.length == 0) res.status(400).send('Invalid Detail - error')
     let clientSecretKey = random[0].dataValues.hashedPassword
 
-    // 
     let tgsSecretKey = secret.tgsSecretKey
 
     let randomToken = require('random-token').create('abcdefghijklmnopqrstuvwxzyABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');

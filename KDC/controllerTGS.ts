@@ -1,12 +1,11 @@
 import * as exp from "express";
 import { serviceDb } from './dbService'
 import {userAuthenticator, D, TGT, F, serviceTicket, units} from "./messages"
-import * as randomToken from "random-token";
 import * as CryptoJS from "crypto-js"
-import * as secret from "../secrets.json"
+import * as secret from "./secrets.json"
 const route = exp.Router()
 
-route.get('/',(req,res)=>{
+route.get('/',async (req,res)=>{
     let encTGT = req.headers.tgt
     let D : D = req.headers.d
     let encUserAuthenticator = req.headers.userauthenticator
@@ -62,7 +61,12 @@ route.get('/',(req,res)=>{
         serviceSessionKey: serviceSessionKey
     }
 
-    let serviceSecretKey = secret.serviceSecretKey
+    let service = await serviceDb.findAll({
+        where: { serviceId: JSON.parse(String(D))["serviceId"] }
+    })
+
+    let serviceSecretKey = service[0].dataValues.serviceSecretKey
+
 
     let cipherF = CryptoJS.AES.encrypt(JSON.stringify(F), TGT.TGSsk).toString()
     let cipherServiceTicket = CryptoJS.AES.encrypt(JSON.stringify(serviceTicket), serviceSecretKey  ).toString()
@@ -71,11 +75,6 @@ route.get('/',(req,res)=>{
     res.status(200).send({cipherF,cipherServiceTicket})
 })
 
-// Just for reference
-// serviceDb.create({
-//     serviceId: 1,
-//     serviceSecretKey: "123"
-// })
 
 export default route
 

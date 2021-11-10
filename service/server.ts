@@ -1,6 +1,7 @@
 import * as express from "express"
 import * as session from "express-session"
 import service from "./controllerServer"
+import * as address from "./address.json"
 const server = express();
 
 server.use(express.json());
@@ -21,7 +22,7 @@ server.use((req, res, next) => {
 server.use('/',service)
 
 
-const PORT = process.env.PORT || 7969
+const PORT = process.env.PORT || address.PORT
 server.listen(PORT,()=>{
     console.log('Server started at http://localhost:'+PORT);
 })
