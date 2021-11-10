@@ -29,8 +29,9 @@ route.get('/',(req,res)=>{
     console.log("\nUser Authenticator : ",userAuthenticator)
     console.log("\nService Ticket : ",serviceTicket)
 
-
-    if((userAuthenticator.username != serviceTicket.username) || timeDifference(new Date(userAuthenticator.timestamp),new Date( serviceTicket.timestamp), 120)) {
+    let userIpAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
+    if((userAuthenticator.username != serviceTicket.username) || timeDifference(new Date(userAuthenticator.timestamp),new Date( serviceTicket.timestamp), serviceTicket.lifeTimeForServiceTicket.value)) {
+    // || serviceTicket.userIpAddress != userIpAddress) { NOT WORKING
         res.status(400).send('Client not valid - Dropping connection at Server')
         return
     }

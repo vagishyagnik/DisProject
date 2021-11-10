@@ -4,40 +4,41 @@ import * as CryptoJS from "crypto-js"
 import fetch from 'cross-fetch'
 
 const route = exp.Router()
-let userIpAddress = "128.0.0.0"
+let userIpAddress = null
 let serviceId = 1
 
-route.post('/signup', async (req, res)=>{
-    if(req.body["password"] != req.body["cpassword"]) {
-        res.redirect('/')
-        return
-    }
-    let myPlaintextPassword = req.body["password"]
-    let clientSecretKey = CryptoJS.SHA256(myPlaintextPassword).toString()
+// route.post('/signup', async (req, res)=>{
+//     if(req.body["password"] != req.body["cpassword"]) {
+//         res.redirect('/')
+//         return
+//     }
+//     let myPlaintextPassword = req.body["password"]
+//     let clientSecretKey = CryptoJS.SHA256(myPlaintextPassword).toString()
 
-    let requestOptions = {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            username: req.body["username"],
-            hashedPassword: clientSecretKey
-        })
-    }
-    let response = await fetch("http://localhost:8004/saveUser", requestOptions)
-    let result = await response.text()
-    res.redirect('/')
-})
+//     let requestOptions = {
+//         method: 'POST',
+//         headers: {
+//             "Content-Type": "application/json"
+//         },
+//         body: JSON.stringify({
+//             username: req.body["username"],
+//             hashedPassword: clientSecretKey
+//         })
+//     }
+//     let response = await fetch("http://localhost:8004/saveUser", requestOptions)
+//     let result = await response.text()
+//     res.redirect('/')
+// })
 
 route.post('/login',async (req,res)=>{
-    
+    userIpAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
+    console.log("client IP is *********************", userIpAddress);
     let A : A = {
         username : req.body["username"],
         serviceId : serviceId,
         userIpAddress : userIpAddress,
         requestedLifeTimeForTGT : {
-            value : 1000,
+            value : 2,
             unit : units.minutes
         }
     }
@@ -77,7 +78,7 @@ route.post('/login',async (req,res)=>{
     let D : D = {
         serviceId : serviceId,
         requestedLifeTimeForTGT : {
-            value : 1000,
+            value : 2,
             unit : units.minutes
         }
     }
@@ -89,10 +90,12 @@ route.post('/login',async (req,res)=>{
 
     let TGSrequestOptions = {
         method: 'GET',
-        headers: {  TGT : authenticatorTGT,
-                    D : JSON.stringify(D),
-                    UserAuthenticator : cipherUserAuthenticator},
-        };  
+        headers: {  
+            TGT : authenticatorTGT,
+            D : JSON.stringify(D),
+            UserAuthenticator : cipherUserAuthenticator
+        },
+    };  
         
     console.log("\nAuthentication request sent to Ticket Granting Server.....")
     console.log("\nData Send to TGS :",TGSrequestOptions.headers)
@@ -122,10 +125,11 @@ route.post('/login',async (req,res)=>{
 
     let serverRequestOptions = {
         method: 'GET',
-        headers: {  serviceticket : encServiceTicket,
-                    userauthenticator : cipherUserAuthenticator
-                },
-        };    
+        headers: {  
+            serviceticket : encServiceTicket,
+            userauthenticator : cipherUserAuthenticator
+        },
+    };    
 
     console.log("\nAuthentication request sent to Server.....")
     console.log("\nData Send to Server :",serverRequestOptions.headers)
@@ -140,7 +144,7 @@ route.post('/login',async (req,res)=>{
     bytes = CryptoJS.AES.decrypt(ServerResult, serviceSessionKey)
     let I: I = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
     
-    console.log("\nAuthenticated done by Server :) ")
+    console.log("\nAuthentication done by Server :) ")
     console.log("\nResponse from Server : ", I)
     
     res.send("\nGot Access")

@@ -2,6 +2,7 @@ import * as express from "express"
 import * as session from "express-session"
 import client from "./controllerClient"
 const server = express();
+const path = require('path')
 
 server.use(express.json());
 server.use(express.urlencoded({extended:true}));
@@ -18,10 +19,10 @@ server.use((req, res, next) => {
     next();
 })
 
-server.use(express.static('public'))
+server.use(express.static(path.join(__dirname, 'public')))
 server.use('/',client)
 
 const PORT = process.env.PORT || 8001
 server.listen(PORT,()=>{
     console.log('Server started at http://localhost:'+PORT);
-})
+})  

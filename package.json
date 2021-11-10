@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start-kdc": "nodemon --exec ts-node kdc.ts",
-    "start-server": "nodemon --exec ts-node server.ts",
-    "start-client": "nodemon --exec ts-node client.ts"
+    "start-kdc": "nodemon --exec ts-node ./KDC/kdc.ts",
+    "start-server": "nodemon --exec ts-node ./service/server.ts",
+    "start-client": "nodemon --exec ts-node ./client/server.ts"
   },
   "repository": {
     "type": "git",

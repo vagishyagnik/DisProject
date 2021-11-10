@@ -11,9 +11,9 @@ route.get('/',(req,res)=>{
     let D : D = req.headers.d
     let encUserAuthenticator = req.headers.userauthenticator
 
-    let tgtSecretKey = secret.tgtSecretKey
+    let tgsSecretKey = secret.tgsSecretKey
 
-    let bytes  = CryptoJS.AES.decrypt(encTGT, tgtSecretKey)
+    let bytes  = CryptoJS.AES.decrypt(encTGT, tgsSecretKey)
     let TGT : TGT = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
 
     bytes  = CryptoJS.AES.decrypt(encUserAuthenticator, TGT.TGSsk)
@@ -28,8 +28,10 @@ route.get('/',(req,res)=>{
     console.log("\nTGT : ",TGT)
     console.log("\nUser Authenticator : ",userAuthenticator)
 
-
-    if((userAuthenticator.username != TGT.username) || timeDifference(new Date(userAuthenticator.timestamp), new Date(TGT.timestamp), 120)) {
+    let userIpAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
+    console.log('szfxgfghgffssasfv------------------------', userIpAddress, TGT.userIpAddress)
+    if((userAuthenticator.username != TGT.username) || timeDifference(new Date(userAuthenticator.timestamp), new Date(TGT.timestamp), TGT.lifetimeForTGT.value)) { 
+    // || TGT.userIpAddress != userIpAddress) { NOT WORKING
         res.status(400).send('Client not valid - Dropping connection at TGS')
         return
     }
@@ -42,7 +44,7 @@ route.get('/',(req,res)=>{
         serviceId: D.serviceId,
         timestamp: date,
         lifetime: {
-            value : 1000,
+            value : 2,
             unit : units.minutes
         },
         serviceSessionKey: serviceSessionKey
@@ -54,7 +56,7 @@ route.get('/',(req,res)=>{
         timestamp: date,
         userIpAddress: TGT.userIpAddress,
         lifeTimeForServiceTicket: {
-            value : 1000,
+            value : 2,
             unit : units.minutes
         },
         serviceSessionKey: serviceSessionKey

@@ -3,6 +3,7 @@ import * as session from "express-session";
 import authServer from "./controllerAuthServer"
 import TGS from "./controllerTGS"
 import saveUser from "./controllerSaveUser"
+const path = require('path')
 const server = express();
 
 server.use(express.json());
@@ -20,10 +21,10 @@ server.use((req, res, next) => {
     next();
 })
 
-server.get('/',(req,res)=>{
-    res.send({response : 'Success'})
-})
-
+// server.get('/',(req,res)=>{
+//     res.send({response : 'Success'})
+// })
+server.use('/',express.static(path.join(__dirname, 'public')))
 server.use('/saveUser', saveUser)
 
 server.use('/authServer', authServer)
