@@ -1,8 +1,9 @@
 import * as exp from "express";
-import {A, B, D, F, I, userAuthenticator,  units} from "./messages"
+import {A, B, D, F, I, userAuthenticator,  units, KeyEx} from "./messages"
 import * as CryptoJS from "crypto-js"
 import * as address from "./address.json"
 import fetch from 'cross-fetch'
+import {getKeys,encrypt , decrypt} from "./DiffieHellmen/diffiehellman"
 
 const route = exp.Router()
 let userIpAddress = null
@@ -11,6 +12,37 @@ let serviceId = 1
 route.post('/login',async (req,res)=>{
     userIpAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
     console.log("client IP is *********************", userIpAddress);
+
+    // diffie hellman*************************************************
+
+    let randomToken = require('random-token').create('abcdefghijklmnopqrstuvwxzyABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
+    let OneTimeToken = randomToken(10); 
+    let clientPrivateKey = CryptoJS.SHA256(req.body["password"]).toString()
+    let clientPublicKey = getKeys(clientPrivateKey, OneTimeToken);
+    let KeyEx : KeyEx = {
+        publicKey: clientPublicKey,
+        random: OneTimeToken
+    }
+    console.log(KeyEx)
+    let keyRequestOptions = {
+        method: 'GET',
+        headers: { KeyEx :JSON.stringify(KeyEx) },
+    };
+
+    // let keyResponse = await fetch(address.kdc.key, keyRequestOptions)
+    // if(keyResponse.status == 400){
+    //     console.log("\nAccess Denied by Authenticator Server !")
+    //     res.send("\nAccess Denied!")
+    // }
+    // let keyResult =await keyResponse.text()
+    // keyResult = JSON.parse(keyResult)
+
+    // let symmKey = getKeys(clientPrivateKey,keyResult["publicKey"])
+
+    // diffie hellman ends
+    // ***************************************************************
+
+
     let A : A = {
         username : req.body["username"],
         serviceId : serviceId,
@@ -25,7 +57,10 @@ route.post('/login',async (req,res)=>{
 
     let requestOptions = {
         method: 'GET',
-        headers: { A :JSON.stringify(A) },
+        headers: { 
+            A : JSON.stringify(A),
+            KeyEx : JSON.stringify(KeyEx)
+        },
     };
 
     let response = await fetch(address.kdc.authServer, requestOptions)
@@ -35,9 +70,20 @@ route.post('/login',async (req,res)=>{
     }
     let result =await response.text()
     result = JSON.parse(result)
-    
+    console.log(result)
+
+    // DH decryption ********************************
+    let symmKey = getKeys(clientPrivateKey,result["publicKey"])
+    console.log(symmKey )
+    let bytesTemp = CryptoJS.AES.decrypt(result["cipherAuthSer"], symmKey)
+    console.log(bytesTemp)
+    result =await JSON.parse(bytesTemp.toString(CryptoJS.enc.Utf8))
+    // DH decryption ends****************************
+    console.log(result)
+
     console.log("\nAuthenticated done by Authenticator Server :) ")
     console.log("\nResponse from Authenticator Server : ",result)
+    console.log(result)
 
     let authenticatorB = result["cipherB"]
     let authenticatorTGT = result["cipherTGT"]

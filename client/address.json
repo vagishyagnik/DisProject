@@ -1,7 +1,8 @@
 {
     "kdc" :{
         "authServer": "http://localhost:8004/authServer",
-        "tgs": "http://localhost:8004/tgs"
+        "tgs": "http://localhost:8004/tgs",
+        "key": "http://localhost:8004/key"
     },
     "service": "http://localhost:7969/",
     "PORT": 8001
