@@ -2,6 +2,8 @@ import * as exp from "express";
 import { userAuthenticator, serviceTicket, I } from "./messages"
 const route = exp.Router()
 import * as CryptoJS from "crypto-js"
+const fs = require('fs')
+const path = require('path')
 
 route.get('/',(req,res)=>{
 
@@ -38,12 +40,35 @@ route.get('/',(req,res)=>{
 
     let response: I = {
         serviceId: serviceTicket.serviceId,
-        timestamp: new Date()
+        timestamp: new Date(),
+        data: ['/giveppt', '/givereport']
     }
     let cipherResponse = CryptoJS.AES.encrypt(JSON.stringify(response), serviceSessionKey).toString();
    
     console.log("\nClient verified from server....")
+
+    // var data = fs.readFileSync(path.join(__dirname, './Vagish_Shanker_Yagnik Resume.pdf'))
+    // res.contentType("application/pdf")
+    // res.send(data);
     res.status(200).send(cipherResponse)
+})
+
+route.get('/giveppt', (req, res)=>{
+    console.log(req.headers)
+    let filePath = "/Vagish_Shanker_Yagnik Resume.pdf";
+    fs.readFile(__dirname + filePath , function (err,data){
+        res.contentType("application/pdf");
+        res.send(data);
+    })
+})
+
+route.get('/givereport', (req, res)=>{
+    console.log(req.header)
+    let filePath = "/Vagish_Shanker_Yagnik Resume.pdf";
+    fs.readFile(__dirname + filePath , function (err,data){
+        res.contentType("application/pdf");
+        res.send(data);
+    })
 })
 
 export default route

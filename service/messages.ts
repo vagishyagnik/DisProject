@@ -25,5 +25,6 @@ export interface serviceTicket {
 
 export interface I {
     serviceId: number,
-    timestamp: Date
+    timestamp: Date,
+    data: Array<String>
 }

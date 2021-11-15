@@ -117,15 +117,18 @@ route.post('/login',async (req,res)=>{
         console.log("\nAccess Denied by Server !")
         res.send("\nAccess Denied!")
     }
-    let ServerResult =await Serverresponse.text()
-
+    let ServerResult = await Serverresponse.text()
+    console.log('----------------', ServerResult)
     bytes = CryptoJS.AES.decrypt(ServerResult, serviceSessionKey)
     let I: I = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
     
     console.log("\nAuthentication done by Server :) ")
     console.log("\nResponse from Server : ", I)
     
-    res.send("\nGot Access")
+    res.send(`
+        <center><h1 style="background-color: red; color: white;">\nGot Access</h1></center> <br>
+        <a href="http://localhost:7969/giveppt">pressss thisssss</a>
+    `)
 
 })
 
