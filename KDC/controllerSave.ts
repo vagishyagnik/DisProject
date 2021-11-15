@@ -6,6 +6,11 @@ import * as CryptoJS from "crypto-js"
 const route = exp.Router()
 
 route.post('/user',async (req,res)=>{
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    if(ip != "::1") {
+        res.send('Try again!! error')
+        return
+    }
     let body = req.body
     // Generate hashed client secret key using client password (will be provided in req.body)
     if(body["password"] != body["passwordC"]) {
@@ -25,7 +30,6 @@ route.post('/user',async (req,res)=>{
     userDb.findAll({
         where: { username: req.body.username }
     }).then((value)=>{
-        console.log('value', value)
         if(value.length == 0) {
             userDb.create(user).then((values)=>{
                 res.status(200).send('User added succesfully')
@@ -45,6 +49,11 @@ route.post('/user',async (req,res)=>{
 })
 
 route.post('/service',async (req,res)=>{
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    if(ip != "::1") {
+        res.send('Try again!! error')
+        return
+    }
     let body = req.body
 
     if(body["serviceSecretKey"] != body["serviceSecretKeyC"]) {
@@ -59,7 +68,6 @@ route.post('/service',async (req,res)=>{
     serviceDb.findAll({
         where: { serviceId: body.serviceId }
     }).then((value)=>{
-        console.log('value', value)
         if(value.length == 0) {
             serviceDb.create(service).then((values)=>{
                 res.status(200).send('Service added succesfully')

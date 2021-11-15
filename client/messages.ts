@@ -47,7 +47,8 @@ export interface F {
 
 export interface I {
     serviceId: number,
-    timestamp: Date
+    timestamp: Date,
+    data: Array<String>
 }
 
 export interface KeyEx{

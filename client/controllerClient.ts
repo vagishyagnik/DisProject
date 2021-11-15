@@ -9,6 +9,7 @@ const route = exp.Router()
 let userIpAddress = null
 let serviceId = 1
 
+
 route.post('/login',async (req,res)=>{
     userIpAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
     console.log("client IP is *********************", userIpAddress);
@@ -42,10 +43,9 @@ route.post('/login',async (req,res)=>{
     // diffie hellman ends
     // ***************************************************************
 
-
     let A : A = {
         username : req.body["username"],
-        serviceId : serviceId,
+        serviceId : Number(serviceId),
         userIpAddress : userIpAddress,
         requestedLifeTimeForTGT : {
             value : 2,
@@ -172,10 +172,21 @@ route.post('/login',async (req,res)=>{
     console.log("\nResponse from Server : ", I)
     
     res.send(`
-        <center><h1 style="background-color: red; color: white;">\nGot Access</h1></center> <br>
-        <a href="http://localhost:7969/giveppt">pressss thisssss</a>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        </head>
+        <body style="background-image: url('https://twelvesec.com/wp-content/uploads/2020/03/security.jpg')">
+            <center><h1 style="background-color: red; color: white;">\nGot Access</h1></center> <br>
+            <h2 style="color: white;"> To get the Project report,  <button style="background-color: blue; width: 10%; height: 6%; font-size: 70%; border-radius: 50%;"> <a href="http://localhost:7969` + I.data[1] + `" style="color: white; text-decoration: none">PRESS ME</a></button>  </h2>
+            <h2 style="color: white;"> To get the Project Presentation, <button style="background-color: brown; width: 10%; height: 6%; font-size: 70%; border-radius: 50%;"> <a href="http://localhost:7969` + I.data[0] + `" style="color: white; text-decoration: none">PRESS ME</a></button> </h2>
+        </body>
+        </html>
     `)
-
 })
 
 export default route

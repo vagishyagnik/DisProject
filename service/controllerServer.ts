@@ -39,9 +39,9 @@ route.get('/',(req,res)=>{
     }
 
     let response: I = {
-        serviceId: serviceTicket.serviceId,
+        serviceId:  Number(serviceTicket.serviceId),
         timestamp: new Date(),
-        data: ['/giveppt', '/givereport']
+        data: ['/xfgvhmbjjhgfxdxv-gfrg', '/hgnfbdvsfdrwetdgf-sdfgh']
     }
     let cipherResponse = CryptoJS.AES.encrypt(JSON.stringify(response), serviceSessionKey).toString();
    
@@ -53,7 +53,7 @@ route.get('/',(req,res)=>{
     res.status(200).send(cipherResponse)
 })
 
-route.get('/giveppt', (req, res)=>{
+route.get('/xfgvhmbjjhgfxdxv-gfrg', (req, res)=>{
     console.log(req.headers)
     let filePath = "/Vagish_Shanker_Yagnik Resume.pdf";
     fs.readFile(__dirname + filePath , function (err,data){
@@ -62,7 +62,7 @@ route.get('/giveppt', (req, res)=>{
     })
 })
 
-route.get('/givereport', (req, res)=>{
+route.get('/hgnfbdvsfdrwetdgf-sdfgh', (req, res)=>{
     console.log(req.header)
     let filePath = "/Vagish_Shanker_Yagnik Resume.pdf";
     fs.readFile(__dirname + filePath , function (err,data){
