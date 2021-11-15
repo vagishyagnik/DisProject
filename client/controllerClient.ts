@@ -22,26 +22,7 @@ route.post('/login',async (req,res)=>{
     let KeyEx : KeyEx = {
         publicKey: clientPublicKey,
         random: OneTimeToken
-    }
-    console.log(KeyEx)
-    let keyRequestOptions = {
-        method: 'GET',
-        headers: { KeyEx :JSON.stringify(KeyEx) },
-    };
-
-    // let keyResponse = await fetch(address.kdc.key, keyRequestOptions)
-    // if(keyResponse.status == 400){
-    //     console.log("\nAccess Denied by Authenticator Server !")
-    //     res.send("\nAccess Denied!")
-    // }
-    // let keyResult =await keyResponse.text()
-    // keyResult = JSON.parse(keyResult)
-
-    // let symmKey = getKeys(clientPrivateKey,keyResult["publicKey"])
-
-    // diffie hellman ends
-    // ***************************************************************
-
+    }   
 
     let A : A = {
         username : req.body["username"],
@@ -53,7 +34,9 @@ route.post('/login',async (req,res)=>{
         }
     }
     console.log("\nAuthentication request sent to Authenticator.....")
+    console.log("\nData Sent:")
     console.log("\nA :",A)
+    console.log("\n Key Exchange :" , KeyEx)
 
     let requestOptions = {
         method: 'GET',
@@ -70,30 +53,23 @@ route.post('/login',async (req,res)=>{
     }
     let result =await response.text()
     result = JSON.parse(result)
-    console.log(result)
-
-    // DH decryption ********************************
-    let symmKey = getKeys(clientPrivateKey,result["publicKey"])
-    console.log(symmKey )
-    let bytesTemp = CryptoJS.AES.decrypt(result["cipherAuthSer"], symmKey)
-    console.log(bytesTemp)
-    result =await JSON.parse(bytesTemp.toString(CryptoJS.enc.Utf8))
-    // DH decryption ends****************************
-    console.log(result)
 
     console.log("\nAuthenticated done by Authenticator Server :) ")
-    console.log("\nResponse from Authenticator Server : ",result)
-    console.log(result)
+    console.log("\nEncrypted Response from Authenticator Server: \n",result["cipherAuthSer"])
 
+    let symmKey = getKeys(clientPrivateKey,result["publicKey"])
+    let bytesTemp = CryptoJS.AES.decrypt(result["cipherAuthSer"], symmKey)
+    result =await JSON.parse(bytesTemp.toString(CryptoJS.enc.Utf8))
+
+    
+    console.log("\nDecrypted packet using Diffie-Hellman: ",result)
     let authenticatorB = result["cipherB"]
     let authenticatorTGT = result["cipherTGT"]
 
     // Generate hashed client secret key using client password (will be provided in req.body)
     const saltRounds = 10;
     let myPlaintextPassword = req.body["password"];
-    console.log('this is the recieved password', myPlaintextPassword)
     let clientSecretKey = CryptoJS.SHA256(myPlaintextPassword).toString()
-    console.log('Client secret key -', clientSecretKey)
     let bytes = CryptoJS.AES.decrypt(authenticatorB, clientSecretKey)
     let decryptB: B = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
 

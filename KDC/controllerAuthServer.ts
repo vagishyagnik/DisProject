@@ -51,21 +51,19 @@ route.get('/',async (req,res)=>{
     let cipherB = CryptoJS.AES.encrypt(JSON.stringify(B), clientSecretKey).toString()
     let cipherTGT = CryptoJS.AES.encrypt(JSON.stringify(TGT), tgsSecretKey ).toString()
 
-    console.log("\nClient verified from user authenticator....")
 
-    // DH ************************
     let publicKey = getKeys(KeyEx.random,authSecrectKey)
     let symmEncrypKey = getKeys(KeyEx.publicKey,authSecrectKey)
-    //console.log("--------------------------------\n"+KeyEx["random"]+"\n"+KeyEx["publicKey"] +"\n"+ publicKey+"\n"+symmEncrypKey)
     let AuthSer : AuthSer = {
         cipherB : cipherB,
         cipherTGT : cipherTGT 
     }
-    //console.log(symmEncrypKey+"******")
+    console.log("\n Response to be send to client :",AuthSer)
     let cipherAuthSer = CryptoJS.AES.encrypt(JSON.stringify(AuthSer), symmEncrypKey ).toString()
-    // DH ************************
 
-     //res.status(200).send({cipherB,cipherTGT})
+    console.log("\nAfter encryption using Diffie-Hellman :",cipherAuthSer)
+    console.log("\nClient verified from user authenticator....")
+
     res.status(200).send({cipherAuthSer, publicKey  })
 })
 
