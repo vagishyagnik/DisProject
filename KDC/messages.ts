@@ -62,3 +62,13 @@ export interface serviceTicket {
     lifeTimeForServiceTicket: time,
     serviceSessionKey: string
 }
+
+export interface KeyEx{
+    publicKey: string,
+    random: string
+}
+
+export interface AuthSer{
+    cipherB : B,
+    cipherTGT : TGT
+}

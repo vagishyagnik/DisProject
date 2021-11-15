@@ -3,6 +3,7 @@ import * as session from "express-session";
 import authServer from "./controllerAuthServer"
 import TGS from "./controllerTGS"
 import save from "./controllerSave"
+import KEY from "./controllerKey"
 import * as address from "./address.json"
 const path = require('path')
 const server = express();
@@ -30,6 +31,8 @@ server.use('/save', save)
 
 server.use('/authServer', authServer)
 server.use('/tgs', TGS)
+
+server.use('/key', KEY)
 
 const PORT = process.env.PORT || address.PORT
 server.listen(PORT,()=>{

@@ -1,13 +1,17 @@
 import * as exp from "express";
 import { userDb } from './dbUsers'
-import {A, B , TGT , units} from "./messages"
+import {A, B , TGT ,units, AuthSer,KeyEx } from "./messages"
 import * as CryptoJS from "crypto-js"
 import * as secret from "./secrets.json"
+import {getKeys,encrypt , decrypt} from "../client/DiffieHellmen/diffiehellman"
 
 const route = exp.Router()
 
+const authSecrectKey = "serverSideSecrectKeyforDH";
+
 route.get('/',async (req,res)=>{
-    let A : A = JSON.parse(req.headers.a );
+    let A : A = JSON.parse(req.headers.a )
+    let KeyEx : KeyEx = JSON.parse(req.headers.keyex )
 
     console.log("\nAuthencation request recieved by Authenticator at ",new Date().getTime())
     console.log("\nA : ",A)
@@ -48,7 +52,21 @@ route.get('/',async (req,res)=>{
     let cipherTGT = CryptoJS.AES.encrypt(JSON.stringify(TGT), tgsSecretKey ).toString()
 
     console.log("\nClient verified from user authenticator....")
-    res.status(200).send({cipherB,cipherTGT})
+
+    // DH ************************
+    let publicKey = getKeys(KeyEx.random,authSecrectKey)
+    let symmEncrypKey = getKeys(KeyEx.publicKey,authSecrectKey)
+    //console.log("--------------------------------\n"+KeyEx["random"]+"\n"+KeyEx["publicKey"] +"\n"+ publicKey+"\n"+symmEncrypKey)
+    let AuthSer : AuthSer = {
+        cipherB : cipherB,
+        cipherTGT : cipherTGT 
+    }
+    //console.log(symmEncrypKey+"******")
+    let cipherAuthSer = CryptoJS.AES.encrypt(JSON.stringify(AuthSer), symmEncrypKey ).toString()
+    // DH ************************
+
+     //res.status(200).send({cipherB,cipherTGT})
+    res.status(200).send({cipherAuthSer, publicKey  })
 })
 
 export default route

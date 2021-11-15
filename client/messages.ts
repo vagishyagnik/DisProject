@@ -49,3 +49,8 @@ export interface I {
     serviceId: number,
     timestamp: Date
 }
+
+export interface KeyEx{
+    publicKey: string,
+    random: string
+}
