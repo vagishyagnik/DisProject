@@ -107,7 +107,7 @@ route.post('/login',async (req,res)=>{
         console.log("\nAccess Denied by Ticket Granting Server !")
         res.send("\nAccess Denied!")
     }
-    let TGSresult =await TGSresponse.text()
+    let TGSresult = await TGSresponse.text()
     TGSresult = JSON.parse(TGSresult)
 
     console.log("\nAuthenticated done by TGS :) ")
@@ -115,7 +115,7 @@ route.post('/login',async (req,res)=>{
 
     let encF = TGSresult["cipherF"]
     let encServiceTicket = TGSresult["cipherServiceTicket"]
-
+// ----
     bytes = CryptoJS.AES.decrypt(encF, tgsSessionKey)
     let F: F = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
 

@@ -55,7 +55,7 @@ route.get('/',(req,res)=>{
 
 route.get('/xfgvhmbjjhgfxdxv-gfrg', (req, res)=>{
     console.log(req.headers)
-    let filePath = "/Vagish_Shanker_Yagnik Resume.pdf";
+    let filePath = "/INS Project presentation.pdf";
     fs.readFile(__dirname + filePath , function (err,data){
         res.contentType("application/pdf");
         res.send(data);
@@ -64,7 +64,7 @@ route.get('/xfgvhmbjjhgfxdxv-gfrg', (req, res)=>{
 
 route.get('/hgnfbdvsfdrwetdgf-sdfgh', (req, res)=>{
     console.log(req.header)
-    let filePath = "/Vagish_Shanker_Yagnik Resume.pdf";
+    let filePath = "/INS Project Report.pdf";
     fs.readFile(__dirname + filePath , function (err,data){
         res.contentType("application/pdf");
         res.send(data);
