@@ -10,6 +10,7 @@ const route = exp.Router()
 const authSecrectKey = "serverSideSecrectKeyforDH";
 
 route.get('/',async (req,res)=>{
+    // ------------------------- STEP 2 STARTS ------------------------- //
     let A : A = JSON.parse(req.headers.a )
     let KeyEx : KeyEx = JSON.parse(req.headers.keyex )
 
@@ -51,7 +52,7 @@ route.get('/',async (req,res)=>{
     let cipherB = CryptoJS.AES.encrypt(JSON.stringify(B), clientSecretKey).toString()
     let cipherTGT = CryptoJS.AES.encrypt(JSON.stringify(TGT), tgsSecretKey ).toString()
 
-
+// ---DIFFIE---
     let publicKey = getKeys(KeyEx.random,authSecrectKey)
     let symmEncrypKey = getKeys(KeyEx.publicKey,authSecrectKey)
     let AuthSer : AuthSer = {
@@ -65,6 +66,8 @@ route.get('/',async (req,res)=>{
     console.log("\nClient verified from user authenticator....")
 
     res.status(200).send({cipherAuthSer, publicKey  })
+    // ------------------------- STEP 2 ENDS ------------------------- //
+
 })
 
 export default route

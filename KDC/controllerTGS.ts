@@ -6,6 +6,7 @@ import * as secret from "./secrets.json"
 const route = exp.Router()
 
 route.get('/',async (req,res)=>{
+    // ------------------------- STEP 5 ------------------------- //
     let encTGT = req.headers.tgt
     let D : D = req.headers.d
     let encUserAuthenticator = req.headers.userauthenticator
@@ -73,6 +74,7 @@ route.get('/',async (req,res)=>{
 
     console.log("\nclient verified from tgs....")
     res.status(200).send({cipherF,cipherServiceTicket})
+    // ---------------- STEP 5 ENDS -------------------- //
 })
 
 

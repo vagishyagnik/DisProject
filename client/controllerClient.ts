@@ -11,6 +11,7 @@ let serviceId = 1
 
 
 route.post('/login',async (req,res)=>{
+    // ------------------------- STEP 1 STARTS ------------------------- //
     userIpAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
     console.log("client IP is *********************", userIpAddress);
 
@@ -48,19 +49,26 @@ route.post('/login',async (req,res)=>{
     };
 
     let response = await fetch(address.kdc.authServer, requestOptions)
+    // ------------------------- STEP 1 ENDS -------------------------//
+
+
+
     if(response.status == 400){
         console.log("\nAccess Denied by Authenticator Server !")
         res.send("\nAccess Denied!")
     }
-    let result =await response.text()
+    let result = await response.text()
     result = JSON.parse(result)
 
     console.log("\nAuthenticated done by Authenticator Server :) ")
     console.log("\nEncrypted Response from Authenticator Server: \n",result["cipherAuthSer"])
 
+
+    // --------------- STEP 3 STARTS ---------------------- /
+    // ---DIFFIE---
     let symmKey = getKeys(clientPrivateKey,result["publicKey"])
     let bytesTemp = CryptoJS.AES.decrypt(result["cipherAuthSer"], symmKey)
-    result =await JSON.parse(bytesTemp.toString(CryptoJS.enc.Utf8))
+    result = await JSON.parse(bytesTemp.toString(CryptoJS.enc.Utf8))
 
     
     console.log("\nDecrypted packet using Diffie-Hellman: ",result)
@@ -87,6 +95,10 @@ route.post('/login',async (req,res)=>{
         username : req.body["username"],
         timestamp : new Date()
     }
+    // ------------------------- STEP 3 ENDS ------------------------- //
+
+
+    // ------------------------- STEP 4 STARTS ------------------------- //
     let cipherUserAuthenticator = CryptoJS.AES.encrypt(JSON.stringify(userAuthenticator), tgsSessionKey).toString()
 
     let TGSrequestOptions = {
@@ -103,6 +115,9 @@ route.post('/login',async (req,res)=>{
     
 
     let TGSresponse = await fetch(address.kdc.tgs, TGSrequestOptions)
+    // ------------------------- STEP 4 ENDS ------------------------- //
+
+
     if(TGSresponse.status == 400){
         console.log("\nAccess Denied by Ticket Granting Server !")
         res.send("\nAccess Denied!")
@@ -113,6 +128,8 @@ route.post('/login',async (req,res)=>{
     console.log("\nAuthenticated done by TGS :) ")
     console.log("\nResponse from TGS : ", TGSresult)
 
+
+    // ------------------------- STEP 6 STARTS ------------------------- //
     let encF = TGSresult["cipherF"]
     let encServiceTicket = TGSresult["cipherServiceTicket"]
 // ----
@@ -136,12 +153,15 @@ route.post('/login',async (req,res)=>{
     console.log("\nData Send to Server :",serverRequestOptions.headers)
 
     let Serverresponse = await fetch(address.service, serverRequestOptions)
+    // ------------------------- STEP 6 ENDS.CLIENT ------------------------- //
     if(Serverresponse.status == 400){
         console.log("\nAccess Denied by Server !")
         res.send("\nAccess Denied!")
     }
     let ServerResult = await Serverresponse.text()
     console.log('----------------', ServerResult)
+
+
     bytes = CryptoJS.AES.decrypt(ServerResult, serviceSessionKey)
     let I: I = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
     
